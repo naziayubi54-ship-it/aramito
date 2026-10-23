@@ -1,0 +1,6 @@
+{
+  "name": "آرامیتو | Aramito",
+  "description": "اپلیکیشن مدیتیشن، تنفس و آرامش بر پایه شواهد علمی با سبک Liquid Glass",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
