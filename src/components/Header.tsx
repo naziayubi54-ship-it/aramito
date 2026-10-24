@@ -10,12 +10,15 @@ interface HeaderProps {
   onOpenMenu: () => void;
   onOpenNotifications: () => void;
   onOpenQuickSession: () => void;
+  /** یادآور کشویی که چسبیده به هدر نمایش داده می‌شود */
+  children?: React.ReactNode;
 }
 
-export const Header: React.FC<HeaderProps> = ({
+const HeaderBase: React.FC<HeaderProps> = ({
   onOpenMenu,
   onOpenNotifications,
-  onOpenQuickSession
+  onOpenQuickSession,
+  children
 }) => {
   const greeting = getGreeting();
   const todayPersian = getPersianDate();
@@ -88,6 +91,9 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
       </div>
+      {children}
     </header>
   );
 };
+
+export const Header = React.memo(HeaderBase);

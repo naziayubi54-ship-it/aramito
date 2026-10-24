@@ -58,38 +58,55 @@ class AudioEngine {
       this.masterGain.connect(this.ctx.destination);
     }
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
     return this.ctx;
   }
 
-  // --- Bell & Chime Synthesis ---
+  // --- Gentle cues (breathing & meditation) ---
+  // صدای بسیار ملایم: موج سینوسی خالص، شروع نرم (بدون حملهٔ ناگهانی) و ولوم پایین،
+  // تا هنگام شروع تمرین یا تغییر مرحلهٔ تنفس هیچ شوک صوتی ایجاد نشود.
   public playChime(type: 'soft' | 'bowl' | 'phase' = 'soft') {
     const ctx = this.initContext();
     const now = ctx.currentTime;
 
-    const baseFreq = type === 'bowl' ? 320 : type === 'phase' ? 587.33 : 440;
-    const duration = type === 'bowl' ? 3.5 : type === 'phase' ? 1.2 : 2.0;
+    const cfg = {
+      soft: { freq: 240, peak: 0.035, attack: 0.35, length: 1.4 },
+      bowl: { freq: 220, peak: 0.04, attack: 0.5, length: 2.4 },
+      phase: { freq: 256, peak: 0.03, attack: 0.3, length: 1.1 }
+    }[type];
 
-    const harmonics = [1, 2.01, 3.02, 4.1];
-    const gains = [0.4, 0.2, 0.1, 0.05];
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(cfg.freq, now);
 
-    harmonics.forEach((h, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(cfg.peak, now + cfg.attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + cfg.length);
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(baseFreq * h, now);
+    osc.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+    osc.start(now);
+    osc.stop(now + cfg.length + 0.05);
+  }
 
-      gain.gain.setValueAtTime(gains[i] * 0.7, now);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-
-      osc.connect(gain);
-      gain.connect(this.masterGain || ctx.destination);
-
-      osc.start(now);
-      osc.stop(now + duration);
-    });
+  /** تیک شمارش ثانیه‌ها؛ بسیار لطیف و تقریباً نامحسوس */
+  public playCountTick() {
+    const ctx = this.initContext();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(210, now);
+    osc.frequency.exponentialRampToValueAtTime(160, now + 0.1);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.linearRampToValueAtTime(0.015, now + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+    osc.connect(gain);
+    gain.connect(this.masterGain || ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.13);
   }
 
   // --- Sound Channel Toggle & Volume ---

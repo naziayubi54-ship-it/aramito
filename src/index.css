@@ -325,7 +325,7 @@ button {
 }
 
 .glow-orb {
-  filter: blur(60px);
+  filter: blur(40px);
   opacity: 0.55;
   pointer-events: none;
   mix-blend-mode: normal;
@@ -353,7 +353,6 @@ button {
 /* ---------------------------------------------------------------- */
 
 html {
-  scroll-behavior: smooth;
 }
 
 body {
@@ -666,3 +665,35 @@ input[type='range']::-moz-range-thumb {
   }
 }
 
+/* ===== بهینه‌سازی سرعت در موبایل و اندروید ===== */
+/* بلور پس‌زمینه (backdrop-filter) روی اندروید بسیار سنگین است؛ در موبایل با پس‌زمینهٔ تقریباً مات جایگزین می‌شود */
+@media (max-width: 768px) {
+  .liquid-glass,
+  .liquid-glass-subtle,
+  .med-glass,
+  .med-pill,
+  [class*="backdrop-blur"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  .liquid-glass {
+    background: color-mix(in srgb, var(--bg-primary) 90%, white 10%);
+  }
+  .dark .liquid-glass {
+    background: color-mix(in srgb, var(--bg-primary) 88%, #4a5590 12%);
+  }
+  .liquid-glass-subtle {
+    background: color-mix(in srgb, var(--bg-primary) 82%, white 18%);
+  }
+  .dark .liquid-glass-subtle {
+    background: color-mix(in srgb, var(--bg-primary) 85%, #4a5590 15%);
+  }
+}
+
+/* کاهش حرکت: اگر کاربر در سیستم‌عامل کاهش انیمیشن را فعال کرده باشد */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

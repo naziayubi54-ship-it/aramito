@@ -58,12 +58,14 @@ export const BookDetailsModal: React.FC<BookDetailsModalProps> = ({
             <div
               className={`w-28 h-40 rounded-2xl bg-gradient-to-tr ${book.coverGradient} shadow-2xl flex flex-col justify-between p-3 text-white shrink-0 relative overflow-hidden border border-white/20`}
             >
+              <img src={`${import.meta.env.BASE_URL}${book.cover}`} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
               <div className="w-1.5 h-full absolute right-0 top-0 bg-white/20" />
-              <div>
+              <div className="relative">
                 <span className="text-[9px] font-bold opacity-80">{book.category}</span>
                 <h4 className="text-xs font-bold leading-tight mt-1 line-clamp-3">{book.title}</h4>
               </div>
-              <p className="text-[10px] opacity-80 truncate">{book.author}</p>
+              <p className="relative text-[10px] opacity-80 truncate">{book.author}</p>
             </div>
 
             <div className="space-y-1.5 flex-1 min-w-0">

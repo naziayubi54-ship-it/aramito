@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useTransition } from 'react';
 import { App as CapApp } from '@capacitor/app';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SplashScreen as NativeSplash } from '@capacitor/splash-screen';
@@ -26,7 +26,12 @@ import { storage, AppSettings } from './services/storage';
 
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<TabType>('home');
+  const [currentTab, setCurrentTabRaw] = useState<TabType>('home');
+  const [, startTransition] = useTransition();
+  // تعویض تب با اولویت پایین: لمس نوار پایین فوراً پاسخ می‌دهد و صفحهٔ سنگین بعدش رندر می‌شود
+  const setCurrentTab = useCallback((tab: TabType) => {
+    startTransition(() => setCurrentTabRaw(tab));
+  }, []);
   const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'auto'>('auto');
   const [isDarkEffective, setIsDarkEffective] = useState<boolean>(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
@@ -154,7 +159,7 @@ export default function App() {
   const openSoundsSection = (tab: 'meditations' | 'mixer') => {
     setSoundsSection((p) => ({ tab, n: p.n + 1 }));
     setCurrentTab('sounds');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo(0, 0);
   };
 
   const handleMenuSelect = (target: MenuTarget) => {
@@ -163,7 +168,7 @@ export default function App() {
       case 'tab':
         setDirectTechId(null);
         setCurrentTab(target.tab);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo(0, 0);
         break;
       case 'music':
         openSoundsSection('meditations');
@@ -221,17 +226,35 @@ export default function App() {
       {/* Sticky Header with greeting, date & quick actions */}
       <Header
         onOpenMenu={() => setMenuOpen(true)}
-        onOpenNotifications={() => setReminderOpen(true)}
+        onOpenNotifications={() => setReminderOpen((v) => !v)}
         onOpenQuickSession={handleOpenQuickSession}
-      />
+      >
+        {/* یادآور کشویی: چسبیده به هدر، فقط یک جملهٔ روز */}
+        <AnimatePresence>
+          {reminderOpen && (
+            <ReminderPopup
+              onClose={() => setReminderOpen(false)}
+              onStartQuick={() => {
+                setReminderOpen(false);
+                handleOpenQuickSession();
+              }}
+              onOpenSettings={() => {
+                setReminderOpen(false);
+                setCurrentTab('profile');
+                window.scrollTo(0, 0);
+              }}
+            />
+          )}
+        </AnimatePresence>
+      </Header>
 
       {/* Main Tab Screens */}
       <main className="flex-1 w-full pt-1 pb-[calc(env(safe-area-inset-bottom,0px)+9rem)]">
         <motion.div
           key={currentTab}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.28, ease: [0.22, 0.8, 0.28, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.15 }}
           className="w-full"
         >
           {currentTab === 'home' && (
@@ -288,7 +311,7 @@ export default function App() {
         onSelectTab={(tab) => {
           setDirectTechId(null);
           setCurrentTab(tab);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo(0, 0);
         }}
         onOpenMusic={() => {
           setDirectTechId(null);
@@ -306,24 +329,6 @@ export default function App() {
         onSelect={handleMenuSelect}
         onToggleTheme={handleToggleTheme}
       />
-
-      {/* پاپ‌آپ یادآوری مهم و جملات مثبت (زنگوله) */}
-      <AnimatePresence>
-        {reminderOpen && (
-          <ReminderPopup
-            onClose={() => setReminderOpen(false)}
-            onStartQuick={() => {
-              setReminderOpen(false);
-              handleOpenQuickSession();
-            }}
-            onOpenSettings={() => {
-              setReminderOpen(false);
-              setCurrentTab('profile');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-        )}
-      </AnimatePresence>
 
       {/* Quick Session / Breathing Player Modal */}
       {quickSessionTech && (

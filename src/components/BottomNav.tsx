@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Wind, BookOpen, Music2 } from 'lucide-react';
+import { Home, Wind, BookOpen, Music2, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { haptics } from '../services/haptics';
 
@@ -16,10 +16,11 @@ interface BottomNavProps {
 const PILL_TABS = [
   { id: 'home' as TabType, label: 'خانه', icon: Home },
   { id: 'breathe' as TabType, label: 'تنفس', icon: Wind },
-  { id: 'library' as TabType, label: 'کتابخانه', icon: BookOpen }
+  { id: 'library' as TabType, label: 'کتابخانه', icon: BookOpen },
+  { id: 'profile' as TabType, label: 'پروفایل', icon: User }
 ];
 
-export const BottomNav: React.FC<BottomNavProps> = ({
+const BottomNavBase: React.FC<BottomNavProps> = ({
   currentTab,
   onSelectTab,
   onOpenMusic,
@@ -83,14 +84,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({
             onOpenMusic();
           }}
           whileTap={{ scale: 0.9 }}
-          animate={{
-            boxShadow: [
-              '0 0 0 0 rgba(64, 188, 174, 0.40)',
-              '0 0 0 12px rgba(64, 188, 174, 0)',
-              '0 0 0 0 rgba(64, 188, 174, 0)'
-            ]
-          }}
-          transition={{ duration: 3.8, repeat: Infinity, ease: 'easeInOut' }}
           title="موسیقی آرامش"
           aria-label="موسیقی آرامش"
           className={`pointer-events-auto shrink-0 w-14 h-14 rounded-full bg-gradient-to-br from-[#52C9BB] to-[#2FA99B] text-white flex items-center justify-center shadow-xl border-2 ${
@@ -103,3 +96,6 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     </div>
   );
 };
+
+// memo: با اسکرول یا تغییر وضعیت‌های بی‌ربط، نوار پایین دوباره رندر نمی‌شود
+export const BottomNav = React.memo(BottomNavBase);

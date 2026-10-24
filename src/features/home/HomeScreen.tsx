@@ -97,8 +97,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 
         <div className="relative flex items-start justify-between gap-2">
           <div>
-            <span className="section-eyebrow">TODAY · SELF CARE</span>
-            <h2 className="text-[19px] font-black text-[var(--text-primary)] mt-1.5 leading-snug">
+            <h2 className="text-[19px] font-black text-[var(--text-primary)] leading-snug">
               {greeting.text}، وقت آرامش درون
             </h2>
             <p className="text-[11.5px] text-[var(--text-secondary)] mt-1 leading-relaxed">

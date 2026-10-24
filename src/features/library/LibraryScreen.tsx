@@ -115,11 +115,13 @@ export const LibraryScreen: React.FC = () => {
             </span>
             <div className="flex gap-4 items-center mt-2">
               <div
-                className={`w-20 h-28 rounded-xl bg-gradient-to-tr ${BOOKS_DATA[0].coverGradient} shadow-xl flex flex-col justify-between p-2 text-white shrink-0`}
+                className={`w-20 h-28 rounded-xl bg-gradient-to-tr ${BOOKS_DATA[0].coverGradient} shadow-xl flex flex-col justify-between p-2 text-white shrink-0 relative overflow-hidden`}
               >
-                <span className="text-[8px] opacity-80">{BOOKS_DATA[0].category}</span>
-                <p className="text-[10px] font-bold leading-tight line-clamp-2">{BOOKS_DATA[0].title}</p>
-                <span className="text-[8px] opacity-70 truncate">{BOOKS_DATA[0].author}</span>
+                <img src={`${import.meta.env.BASE_URL}${BOOKS_DATA[0].cover}`} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                <span className="relative text-[8px] opacity-80">{BOOKS_DATA[0].category}</span>
+                <p className="relative text-[10px] font-bold leading-tight line-clamp-2">{BOOKS_DATA[0].title}</p>
+                <span className="relative text-[8px] opacity-70 truncate">{BOOKS_DATA[0].author}</span>
               </div>
 
               <div className="flex-1 min-w-0">
@@ -154,11 +156,13 @@ export const LibraryScreen: React.FC = () => {
                   <div
                     className={`aspect-[3/4.2] rounded-2xl bg-gradient-to-tr ${book.coverGradient} shadow-md p-3 text-white flex flex-col justify-between relative overflow-hidden border border-white/20`}
                   >
-                    <div className="flex items-center justify-between">
+                    <img src={`${import.meta.env.BASE_URL}${book.cover}`} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                    <div className="relative flex items-center justify-between">
                       <span className="text-[8px] opacity-80">{book.category}</span>
                       {book.isAudioBook && <Headphones className="w-3 h-3 text-white/90" />}
                     </div>
-                    <div>
+                    <div className="relative">
                       <h4 className="text-[11px] font-bold leading-snug line-clamp-2">{book.title}</h4>
                       <p className="text-[9px] opacity-80 truncate mt-0.5">{book.author}</p>
                     </div>
@@ -199,8 +203,10 @@ export const LibraryScreen: React.FC = () => {
                 className="liquid-glass rounded-3xl p-4 cursor-pointer flex items-center justify-between shadow-md"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-12 h-16 rounded-xl bg-gradient-to-tr ${book.coverGradient} shadow-md flex items-center justify-center text-white shrink-0`}>
-                    <BookOpen className="w-6 h-6" />
+                  <div className={`w-12 h-16 rounded-xl bg-gradient-to-tr ${book.coverGradient} shadow-md flex items-center justify-center text-white shrink-0 relative overflow-hidden`}>
+                    <img src={`${import.meta.env.BASE_URL}${book.cover}`} alt="" loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover" />
+<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                    <BookOpen className="relative w-6 h-6" />
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-[var(--text-primary)]">{book.title}</h4>
